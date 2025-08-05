@@ -8,13 +8,16 @@ Students will develop the necessary skills to:
 * Have a PCB that can be used as a reference design for their capstone projects.
 
 ## Schematic Guide:
+
 First thing is to download KiCad: https://www.kicad.org
 Create a new project called `[netid]_esp32c3DevBoard` and open `[netid]_esp32c3DevBoard.sch`.
+
 ### Microcontroller Setup
+
 When designing a PCB with a microcontroller unit (MCU), the best place to start is its datasheet. For this particular assignment, the MCU used will be an ESP32-C3. Its datasheet can be found in the following link.
 https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf
 
-Hit `a` to open the component add dialog. Search "ESP32-C3" for an ESP32-C3 in an QFN package and click "ok" to place the part.
+Hit `a` to open the component add dialog. Search `ESP32-C3` for an ESP32-C3 in an QFN package and click `ok` to place the part.
 
 <figure align="center">
   <img src="Images/schematics/mcu.png" alt="ESP32-C3 Selection" />
@@ -22,11 +25,11 @@ Hit `a` to open the component add dialog. Search "ESP32-C3" for an ESP32-C3 in a
 </figure>
 
 
-While you're here, add the following components
+While here, add the following components
+
 * Two `Conn_01x04_Pin`. These will be used for GPIO and UART connectors
 * `R` for resistors
 * `C` for decoupling capacitors. Decoupling capacitors are typically used to filter out noise.
-* `L` for inductors
 * `GND` for a general ground
   
 Use `w` to start routing a new wire under the mouse, left-click to finish routing, and `Esc` to cancel. For a cleaner schematic, use labels to connect pins to the microcontroller. Use `l` to place labels on pins or wires. Any two points with the same label will behave as if connected by a wire. Use `Q` for pins you will leave unconnected.
@@ -78,25 +81,29 @@ The convention to follow when placing components in a block is for power/signal 
 The ESP32 offers wireless capability,  which requires the use an antenna that resonates at 2.4GHz. Add the following parts, and create the schematic shown below.
 
 * `Antenna`
-* `C` for two `3.2pF` capacitors
-* `L` for a `2.2nH` inductor
+* `C` for two placeholder capacitors
+* `L` for a placeholder inductor
+  
 <figure align="center">
   <img src="Images/schematics/antenna.png" alt="Antenna Schematic" />
 </figure>
 
-For the best performance, you will want to implement a  matching networking. The network we are using is often called a `Pi` network. The values for these components may be tuned for optimal performance, and that requires more rigorous testing and experimentation. For now we will use the matching network shown above. However, for your own designs and boards, these values will vary. It is best practice to include a placeholder matching network.
+The default antenna that you will be using is antenna `AE2`, it is a ceramic chip antenna. However for groups that would like to use an external antenna outside of this assignment, `AE1` may be used instead by soldering a `0402` sized `0 Ohm` resistor. For the best performance, you will want to implement a  matching networking. The matching network we are using is called a `Pi` network. The values for these components should be tuned for optimal performance, and that requires more rigorous testing and experimentation. For this board we will simply use a `0 ohm` jumper resistor instead of the inductor `L1` to complete the electrical connection between the `LNA_IN` on the MCU and the `AE2`. This is not optimal and there is room for improvement, but it works. If your use case requires stronger wireless capability, it is best practice to include a placeholder matching network and then measure and test which values for your capacitors and inductors will work best.
 
 ### Bootstrapping Pins and Reset Button
 Add the following parts for this portion:
+
 * Two `SW_Push`
 * `R` for three pull up resistors with values `10kOhm`. 
 * `C` for two `1uF` capacitors
   
 The final schematic should look like this:
+
 <figure align="center">
   <img src="Images/schematics/bootstrap.png" alt="BootStrapping Pins and Reset Schematic" />
 </figure>
-The buttons define the boot modes and reset conditions for the ESP32. A 'bootmode' refers to the various ways a microcontroller can be configured and initialized, often defined by the physical state of hardware pins. Your firmware must match the specific bootmode that a microcontroller is configured to or else it will not work. A common and unfixable mistake is when a board is designed such that its bootmode pins are permanently configured in an invalid way. Buttons (and switches) to configure your MCU give your design options and flexibility to program, mitigating risk in your PCB designs. Details on the ESP32C3's boot mode can be found on page 29 of its datasheet.
+
+The buttons define the boot modes and reset conditions for the ESP32. A `bootmode` refers to the various ways a microcontroller can be configured and initialized, often defined by the physical state of hardware pins. Your firmware must match the specific bootmode that a microcontroller is configured to or else it will not work. A common and unfixable mistake is when a board is designed such that its bootmode pins are permanently configured in an invalid way. Buttons (and switches) to configure your MCU give your design options and flexibility to program, mitigating risk in your PCB designs. Details on the ESP32C3 boot mode can be found on page 29 of its datasheet.
 
 The reset button is implemented with a debouncing circuit to filter out parasitic transitions caused by button presses. A deeper explanation of this is provided under `Peripherals` of the following webpage: https://courses.grainger.illinois.edu/ece445/wiki/#/kicad/index.md
 
@@ -112,10 +119,12 @@ The pins connected from the ESP32C3 can be used as `GPIO` pins. For now, the sch
 ### Crystal Setup
 The ESP32 requires a `40MHz` crystal. We will be using the `ECS-400-10-37B2-CKY-TR` crystal. However, this part is not natively found in the KiCAD library. So we will have to import it from online. 
 
-* A schematic symbol and footprint can be found on websites such as `www.snapeda.com` or `app.ultralibrarian.com`. Both will work if you do a search for your component. Oftentimes, vendors like Digikey will include a link to a parts model under `EDA/CAD Models` as shown below:
+A schematic symbol and footprint can be found on websites such as `www.snapeda.com` or `app.ultralibrarian.com`. Both will work if you do a search for your component. Oftentimes, vendors like Digikey will include a link to a parts model under `EDA/CAD Models` as shown below:
+  
 <figure align="center">
   <img src="Images/schematics/cad-model.png" alt="Vendor Linking Models for usage" />
 </figure>
+
 You may have to import CAD models for specific component in your teams projects. For this part, the following links will allow you to download a CAD model assuming that they are not deprecated.
 
 * https://www.snapeda.com/parts/ECS-400-10-37B2-CKY-TR/ECS/view-part/?ref=digikey
@@ -176,7 +185,7 @@ Before moving on to the next stage, we will clean up and document our schematic.
 </figure>
 
 ### Footprint Assignments
-After defining the schematics, it's now time to assign physical footprints to each component. A footprint defines the area where a component will be mounted and soldered onto the board, ensuring proper electrical connections and mechanical attachment. It is a layout of pad, outlines, and markings on a PCB that matches the physical dimensions and pin configuration of a specific electronic component. Click on the footprint assigment tool in the the toolbar:
+After defining the schematics, it is now time to assign physical footprints to each component. A footprint defines the area where a component will be mounted and soldered onto the board, ensuring proper electrical connections and mechanical attachment. It is a layout of pad, outlines, and markings on a PCB that matches the physical dimensions and pin configuration of a specific electronic component. Click on the footprint assigment tool in the the toolbar:
 
 <figure align="center">
   <img src="Images/schematics/footprint-toolbar.png" alt="Footprint Editor Toolbar" />
@@ -184,13 +193,14 @@ After defining the schematics, it's now time to assign physical footprints to ea
 
 KiCAD will bring up the footprint association window, containing three panes. The left pane contains the categories of footprints, the middle pane contains your parts that need footprints assigned to them, and the right pane contains available footprints based on your filter options.
 
-We'll start with the capacitors. We have 0805 sized capacitors that we will solder by hand, so double-click Capacitor_SMD:C_0805_..._HandSolder. Pay attention to the filter options at the top of the window.
+We will start with the capacitors. We have 0805 sized capacitors that we will solder by hand, so double-click Capacitor_SMD:C_0805_..._HandSolder. Pay attention to the filter options at the top of the window.
+<!-- * `Diode_SMD:D_SOD-923`  -->
 
 Assignment the following components to the rest of the board:
-<!-- * `RF_Antenna:Johanson_2450AT43F0100` -->
+
+* `RF_Antenna:Johanson_2450AT43F0100`
 * `Connector_Coaxial:U.FL_Molex_MCRF_73412-0110_Vertical`
 * `Button_Switch_THT:SW_DIP_SPSTx02_Slide_9.78x7.26mm_W7.62mm_P2.54mm`
-<!-- * `Diode_SMD:D_SOD-923`  -->
 * `Connector_USB:USB_C_Receptacle_G-Switch_GT-USB-7010ASV`
 * `Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical`
 * `Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical`
@@ -206,12 +216,10 @@ Assignment the following components to the rest of the board:
 The final assignments should look like this:
 
 <figure align="center">
-  <img src="Images/schematics/footprint-assignment-1-24.png" alt="" />
+  <img src="Images/schematics/footprint-assignment.png" alt="" />
 </figure>
 
-<figure align="center">
-  <img src="Images/schematics/footprint-assignment-25-38.png" alt="" />
-</figure>
+
 
 
 ## Layout Guide
@@ -220,12 +228,15 @@ Now we will switch to the physical layout of the board. From the schematic view,
 <figure align="center">
   <img src="Images/schematics/layout-2-schematic.png" alt="Switch to PCB Layout" />
 </figure>
-Start by clicking the "Update PCB with changes made to schematic" button and place the footprints somewhere in the middle of the page. If you make changes to your schematic later on, you should use this button.
+
+Start by clicking the `Update PCB with changes made to schematic` button and place the footprints somewhere in the middle of the page. If you make changes to your schematic later on, you should use this button.
 
 <figure align="center">
   <img src="Images/schematics/pull-updates.png" alt="Pull Updates from PCB" />
 </figure>
+
 After initially pulling in footprints from your schematic, it should look something like this:
+
 <figure align="center">
   <img src="Images/layout/update.png" alt="Initial Layout" />
 </figure>
@@ -236,7 +247,7 @@ The blue lines are unrouted nets and indicatew what component pads are going to 
   <img src="Images/layout/edge-cuts.png" alt="Define Edge Cuts" />
 </figure>
 
-Drawing a shape of size `55mmx55mm`, your layout should look something like this:
+Drawing a shape of size `65mmx55mm`, your layout should look something like this:
 <figure align="center">
   <img src="Images/layout/edge-cut-defined.png" alt="" />
 </figure>
@@ -263,7 +274,7 @@ As a note, to rotate a footprint to 45 degrees, go to `Settings> PCB Editor > Ed
   <img src="Images/layout/rot-45.png" alt="" />
 </figure>
 
-When you've placed all your components, make sure the component references are visible and not obscured by other footprints. You will use these references when populating the board.
+Once you have placed all your components, make sure the component references are visible and not obscured by other footprints. You will use these references when populating the board.
 ## Routing:
 The success of your routing is dependent on your project. Typically, traces that are high-speed, high-power, or highly parallel are prone to be more sensitive to layout than slower data lines or GPIO. You should identify and prioritze these first. In this particular board, we have the following critical traces
 
@@ -286,6 +297,7 @@ Some useful shortcuts in KiCAD that you may use for routing are the following:
  
 #### USB 2.0 Differential Traces
 USB 2.0 defines a differential signaling pair, according to standard, the differential trace impedance needs to be `90 Ohm`. You should now define a differential pair with a width of `17mils` and a gap of `8 mils`. The differential impedance is dependent on the geometry of your traces as well as your physical stackup. These dimensions were chosen by using a trace impedance calculator that is available in KiCAD as well as other websites.
+
 <figure align="center">
   <img src="Images/layout/differential-pair.png" alt="" />
 </figure>
@@ -293,6 +305,7 @@ USB 2.0 defines a differential signaling pair, according to standard, the differ
 `6` initiates the process for routing differential pairs. Draw traces labeled `USB_D_P` and `USB_D_N` from the USB C connector to the ESP32.
 
 Since USB is a differential signal, the physical length of each line should be equal. Given your routing, there may be some physical differences in length. To fix this, skew can be intentionally introduced in your routing. To do so, click on `Tools > Tune Skew of Differential Pair`. Your cursor hovering over the differential pair should indicate how much length mismatch there is:
+a
 <figure align="center">
   <img src="Images/layout/current-skew.png" alt="" />
 </figure>
@@ -321,15 +334,16 @@ When routing a PCB, you will will need to route traces on the backside of the PC
 Continue routing the rest of the tracks. Use 20 mil tracks when connecting power traces to the regulator, and the regulator to the microcontroller. Otherwise, a `10mil` trace width for GPIO and other trace will be okay.
 
 Before moving on, make sure your trace sizes match the following:
+
 * USB 2.0: `7 mils`
 * Power Traces (VDD33, 5V): `25 mils`
 * RF Traces: `40mils`
 
 You should also have some spacing between your data traces to mitigate cross talk. Generally, a separation of two to three times the trace width is good rule of thumb to follow.
 
-<!-- 
+ 
 ### No Fill Zone
-The antenna requires a no fill zone, where there will be no copper pour when the PCB is manufactured. To define a zone, click on the following in the toolbar.
+The ceramic antenna requires a no fill zone, where there will be no copper pour when the PCB is manufactured. To define a zone, click on the following in the toolbar.
 
 <figure align="center">
   <img src="Images/layout/no-fill.png" alt="No Fill Zone Toolbar selection" />
@@ -340,11 +354,11 @@ Use the following settings for the zone:
   <img src="Images/layout/antenna-no-fill.png" alt="No Fill Zone Settings" />
 </figure>
 
-Define a no fill zone rectangle with dimensions of `10mmx75mm`. It should look like something below:
+Define a no fill zone rectangle with dimensions of `10mmx55mm`. It should look like something below:
 
 <figure align="center">
   <img src="Images/layout/antenna-zone.png" alt="Antenna No Fill Zone" />
-</figure> -->
+</figure>
 
 ### Grounding
 Press `b` to define a copper pour. This will fill the empty space with copper that acts as a GND signal plane for your circuit. Notice that in certain areas of the board there are discontinuities in the copper fill, resulting in `"copper islands"`. These can be problematic, however, they are easily solved by utilized a stitching via.
@@ -372,7 +386,7 @@ Click `File > Fabrication Outputs > Gerbers .gbr`. Select an output directory, a
 Please refer to https://courses.grainger.illinois.edu/ece445/wiki/#/kicad/index?id=appendix if you would like to create custom footprints or symbols.
 
 ## Assembly Guide:
-* To assemble the board, please refer to https://courses.grainger.illinois.edu/ece445/wiki/#/soldering/index?id=soldering for a guide to solder SMD components.
+To assemble the board, please refer to https://courses.grainger.illinois.edu/ece445/wiki/#/soldering/index?id=soldering for a guide to solder SMD components.
 
 <!-- ### Crystal and MCU Soldering TBD if needed. See what Arne thinks-->
 
@@ -398,9 +412,9 @@ Before uploading a program, make sure your settings match those shown below:
   <img src="Images/firmware/firmware-settings.png" alt="Firmware Settings" />
 </figure>
 
-You can change your board by selecting "Board:" > "ESP32 Arduino (In sketchbook)" and selecting "ESP32C3 Dev Module"
-The description under "Port: " May vary based on your computer. When plugging in your board into your computer, a new port should pop up, select that board for this program.
-"USB CDC On Boot" should be enabled. This allows for serial connection over USB with the ESP32.
+You can change your board by selecting `"Board:" > "ESP32 Arduino (In sketchbook)"` and selecting `"ESP32C3 Dev Module"`
+The description under `"Port: "` may vary based on your computer. When plugging in your board into your computer, a new port should pop up, select that board for this program.
+`"USB CDC On Boot"` should be enabled. This allows for serial connection over USB with the ESP32.
 
 ### Hello World Program
 ```
